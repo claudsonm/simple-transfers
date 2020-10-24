@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Enums\UserPersonTypes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -28,6 +29,35 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'person_type' => $this->faker->randomElement(UserPersonTypes::toArray()),
         ];
+    }
+
+    /**
+     * Indicate that the user is a physical person.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function physical()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'person_type' => UserPersonTypes::PHYSICAL_PERSON()->getValue(),
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the user is a legal person.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function legal()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'person_type' => UserPersonTypes::LEGAL_PERSON()->getValue(),
+            ];
+        });
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Wallet;
 use App\Enums\UserPersonTypes;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -36,7 +37,7 @@ class UserFactory extends Factory
     /**
      * Indicate that the user is a physical person.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return static
      */
     public function physical()
     {
@@ -50,7 +51,7 @@ class UserFactory extends Factory
     /**
      * Indicate that the user is a legal person.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return static
      */
     public function legal()
     {
@@ -59,5 +60,13 @@ class UserFactory extends Factory
                 'person_type' => UserPersonTypes::LEGAL_PERSON()->getValue(),
             ];
         });
+    }
+
+    /**
+     * @return static
+     */
+    public function withWallet()
+    {
+        return $this->has(Wallet::factory());
     }
 }

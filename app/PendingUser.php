@@ -78,4 +78,15 @@ class PendingUser
 
         return $this;
     }
+
+    public function getAttributes(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+            'person_type' => $this->type->getValue(),
+            'document_number' => $this->documentNumber,
+        ];
+    }
 }

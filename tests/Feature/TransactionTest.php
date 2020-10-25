@@ -79,7 +79,7 @@ class TransactionTest extends TestCase
         $this->postJson('/api/transactions', $data)
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                'payer' => 'The selected payer is invalid.',
+                'value' => 'The value is higher than the balance available.',
             ]);
     }
 

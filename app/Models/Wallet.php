@@ -39,4 +39,16 @@ class Wallet extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * @param int|float $value
+     */
+    public function balanceIsGreaterThanOrEqualTo($value): bool
+    {
+        if (is_float($value)) {
+            $value = $value * 100;
+        }
+
+        return $this->balance >= $value;
+    }
 }

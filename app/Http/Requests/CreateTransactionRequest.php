@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Wallet;
 use App\Rules\WalletHasEnoughFunds;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 class CreateTransactionRequest extends FormRequest
 {
+    private ?Wallet $payerWallet = null;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -32,7 +35,7 @@ class CreateTransactionRequest extends FormRequest
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/',
                 'min:1',
-                new WalletHasEnoughFunds(),
+                new WalletHasEnoughFunds($this->retrievePayerWallet()),
             ],
             'payer' => [
                 'required',
@@ -51,5 +54,14 @@ class CreateTransactionRequest extends FormRequest
                 }),
             ],
         ];
+    }
+
+    public function retrievePayerWallet(): Wallet
+    {
+        if (null === $this->payerWallet) {
+            $this->payerWallet = $this->user()->wallet;
+        }
+
+        return $this->payerWallet;
     }
 }

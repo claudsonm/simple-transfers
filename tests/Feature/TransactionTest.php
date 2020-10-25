@@ -74,7 +74,7 @@ class TransactionTest extends TestCase
 
         $data = [
             'payer' => $alceuValenca->id,
-            'value' => 50.25,
+            'value' => 25.01,
         ];
         $this->postJson('/api/transactions', $data)
             ->assertStatus(422)

@@ -7,12 +7,15 @@ use App\PendingUser;
 use App\Aggregates\WalletAggregateRoot;
 use App\Http\Requests\CreateUserRequest;
 use Illuminate\Support\Str;
+use App\Repositories\Contracts\UserRepository;
 
 class UserController extends Controller
 {
-    public function __construct()
+    protected UserRepository $repository;
+
+    public function __construct(UserRepository $repository)
     {
-        $this->authorizeResource(User::class, 'user');
+        $this->repository = $repository;
     }
 
     /**
@@ -22,6 +25,7 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
+        dd($this->repository->create($request->validated()));
         $pendingUser = PendingUser::createWithAttributes($request->validated());
 
 
@@ -39,8 +43,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable
      */
-    public function show(User $user)
+    public function show(int $user)
     {
+        $user = $this->repository->find($user);
         $this->authorize('view', $user);
 
         return $user;

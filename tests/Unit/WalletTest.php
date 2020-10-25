@@ -15,5 +15,7 @@ class WalletTest extends TestCase
         $wallet->balance = 1000;
 
         $this->assertTrue($wallet->balanceIsGreaterThanOrEqualTo(Money::BRL(1000)));
+        $this->assertFalse($wallet->balanceIsGreaterThanOrEqualTo(Money::BRL(1001)));
+        $this->assertTrue($wallet->balanceIsGreaterThanOrEqualTo(Money::BRL(-500)));
     }
 }

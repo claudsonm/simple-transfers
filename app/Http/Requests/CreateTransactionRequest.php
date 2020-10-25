@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\WalletHasEnoughFunds;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,6 +32,7 @@ class CreateTransactionRequest extends FormRequest
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/',
                 'min:1',
+                new WalletHasEnoughFunds(),
             ],
             'payer' => [
                 'required',

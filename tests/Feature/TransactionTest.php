@@ -60,6 +60,29 @@ class TransactionTest extends TestCase
             ]);
     }
 
+    /** @test */
+    public function it_assures_the_user_has_enough_funds_to_perform_the_transaction()
+    {
+        $alceuValenca = null;
+        User::withoutEvents(function () use (&$alceuValenca) {
+            $alceuValenca = User::factory()
+                ->physical()
+                ->withBalance(2500)
+                ->create();
+            Sanctum::actingAs($alceuValenca);
+        });
+
+        $data = [
+            'payer' => $alceuValenca->id,
+            'value' => 50.25,
+        ];
+        $this->postJson('/api/transactions', $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'payer' => 'The selected payer is invalid.',
+            ]);
+    }
+
     /**
      * @test
      * @dataProvider invalidCurrencyFormats

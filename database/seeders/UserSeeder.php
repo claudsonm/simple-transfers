@@ -14,14 +14,16 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->withWallet()->create([
-            'name' => 'Alice',
-            'email' => 'alice@example.com',
-        ]);
-        User::factory()->withWallet()->create([
-            'name' => 'Bob',
-            'email' => 'bob@example.com',
-        ]);
-        User::factory(10)->withWallet()->create();
+        User::withoutEvents(function () {
+            User::factory()->withWallet()->create([
+                'name' => 'Alice',
+                'email' => 'alice@example.com',
+            ]);
+            User::factory()->withWallet()->create([
+                'name' => 'Bob',
+                'email' => 'bob@example.com',
+            ]);
+            User::factory(10)->withWallet()->create();
+        });
     }
 }

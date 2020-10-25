@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class TransactionTest extends TestCase
@@ -19,6 +19,45 @@ class TransactionTest extends TestCase
 
         $this->postJson('/api/transactions')
             ->assertForbidden();
+    }
+
+    /** @test */
+    public function it_doesnt_allow_transactions_to_non_existent_users()
+    {
+        Sanctum::actingAs(User::factory()->physical()->create());
+
+        $this->postJson('/api/transactions', ['payee' => 10])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'payee' => 'The selected payee is invalid.',
+            ]);
+    }
+
+    /** @test */
+    public function it_doesnt_allow_transactions_for_the_current_authenticated_user()
+    {
+        $galCosta = User::factory()->physical()->create();
+        Sanctum::actingAs($galCosta);
+
+        $this->postJson('/api/transactions', ['payee' => $galCosta->id])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'payee' => 'The selected payee is invalid.',
+            ]);
+    }
+
+    /** @test */
+    public function it_doesnt_allow_an_payer_to_be_an_user_other_than_the_authenticated_user()
+    {
+        $dominguinhos = User::factory()->physical()->create();
+        $luizGonzaga = User::factory()->physical()->create();
+        Sanctum::actingAs($luizGonzaga);
+
+        $this->postJson('/api/transactions', ['payer' => $dominguinhos->id])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'payer' => 'The selected payer is invalid.',
+            ]);
     }
 
     /**
@@ -45,7 +84,6 @@ class TransactionTest extends TestCase
         Sanctum::actingAs(User::factory()->physical()->create());
 
         $this->postJson('/api/transactions', ['value' => $amount])
-            ->dump()
             ->assertStatus(422)
             ->assertJsonValidationErrors([
                 'value' => $error,

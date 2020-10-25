@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateTransactionRequest extends FormRequest
 {
@@ -24,9 +26,28 @@ class CreateTransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'value' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/', 'min:1'],
-            'payer' => ['required', 'integer', 'exists:users,id'],
-            'payee' => ['required', 'integer', 'exists:users,id'],
+            'value' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',
+                'min:1',
+            ],
+            'payer' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) {
+                    if ($value != $this->user()->id) {
+                        $fail('The selected '.$attribute.' is invalid.');
+                    }
+                },
+            ],
+            'payee' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where(function (Builder $query) {
+                    $query->where('id', '!=', $this->user()->id);
+                }),
+            ],
         ];
     }
 }

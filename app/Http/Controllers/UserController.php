@@ -43,9 +43,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable
      */
-    public function show(int $user)
+    public function show(int $id)
     {
-        $user = $this->repository->find($user);
+        $user = $this->repository->find($id);
         $this->authorize('view', $user);
 
         return $user;

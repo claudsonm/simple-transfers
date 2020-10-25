@@ -17,4 +17,4 @@ use Illuminate\Support\Facades\Route;
 Route::post('/token', \App\Http\Controllers\AuthenticationController::class);
 
 Route::post('/users', [\App\Http\Controllers\UserController::class, 'store']);
-Route::middleware('auth:sanctum')->get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show']);
+Route::middleware('auth:sanctum')->get('/users/{id}', [\App\Http\Controllers\UserController::class, 'show']);

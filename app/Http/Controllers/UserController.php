@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\PendingUser;
+use App\Support\PendingUser;
 use App\Aggregates\WalletAggregateRoot;
 use App\Http\Requests\CreateUserRequest;
 use Illuminate\Support\Str;

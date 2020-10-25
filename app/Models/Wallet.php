@@ -22,6 +22,15 @@ class Wallet extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'balance' => 'integer',
+    ];
+
+    /**
      * The wallet owner.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

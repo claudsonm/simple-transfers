@@ -2,38 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Support\PendingUser;
-use App\Aggregates\WalletAggregateRoot;
 use App\Http\Requests\CreateUserRequest;
-use Illuminate\Support\Str;
+use App\Models\User;
 use App\Repositories\Contracts\UserRepository;
 
 class UserController extends Controller
 {
-    protected UserRepository $repository;
-
-    public function __construct(UserRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return User
      */
     public function store(CreateUserRequest $request)
     {
-        $pendingUser = PendingUser::createWithAttributes($request->validated());
-        $user = $this->repository->create($pendingUser->getAttributes());
-
-        $newUuid = Str::uuid()->toString();
-        WalletAggregateRoot::retrieve($newUuid)
-            ->createWalletFor($user)
-            ->persist();
-
-        return $user;
+        return User::createWithAttributes($request->validated())->save();
     }
 
     /**
@@ -41,9 +23,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Contracts\Auth\Authenticatable
      */
-    public function show(int $id)
+    public function show(int $id, UserRepository $repository)
     {
-        $user = $this->repository->find($id);
+        $user = $repository->find($id);
         $this->authorize('view', $user);
 
         return $user;

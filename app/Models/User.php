@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PendingUser;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function wallet()
     {
         return $this->hasOne(Wallet::class);
+    }
+
+    public static function createWithAttributes(array $attributes): PendingUser
+    {
+        return new PendingUser($attributes);
     }
 }

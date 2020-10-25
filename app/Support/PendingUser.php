@@ -2,7 +2,9 @@
 
 namespace App\Support;
 
+use App\Models\User;
 use App\Enums\UserPersonTypes;
+use App\Actions\CreateUserAction;
 
 class PendingUser
 {
@@ -16,7 +18,7 @@ class PendingUser
 
     private string $documentNumber;
 
-    protected function __construct(array $attributes)
+    public function __construct(array $attributes)
     {
         foreach ($attributes as $attribute => $value) {
             $method = 'set'.str_replace('_', '', $attribute);
@@ -24,22 +26,6 @@ class PendingUser
                 $this->{$method}($value);
             }
         }
-    }
-
-    /**
-     * @return static
-     */
-    public static function createWithAttributes(array $attributes)
-    {
-        return new static($attributes);
-    }
-
-    public function setDocumentNumber(string $documentNumber): self
-    {
-        $this->documentNumber = $documentNumber;
-        $this->inferTypeOfPersonFromDocument($documentNumber);
-
-        return $this;
     }
 
     public function setName(string $name): self
@@ -59,6 +45,14 @@ class PendingUser
     public function setPassword(string $password): self
     {
         $this->password = bcrypt($password);
+
+        return $this;
+    }
+
+    public function setDocumentNumber(string $documentNumber): self
+    {
+        $this->documentNumber = $documentNumber;
+        $this->inferTypeOfPersonFromDocument($documentNumber);
 
         return $this;
     }
@@ -88,5 +82,10 @@ class PendingUser
             'person_type' => $this->type->getValue(),
             'document_number' => $this->documentNumber,
         ];
+    }
+
+    public function save(): User
+    {
+        return resolve(CreateUserAction::class)->execute($this);
     }
 }

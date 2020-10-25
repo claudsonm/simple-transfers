@@ -25,14 +25,12 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
-        dd($this->repository->create($request->validated()));
         $pendingUser = PendingUser::createWithAttributes($request->validated());
-
-
-        $user = User::create($validated);
+        $user = $this->repository->create($pendingUser->getAttributes());
 
         $newUuid = Str::uuid()->toString();
         WalletAggregateRoot::retrieve($newUuid)
+            ->createWalletFor($user)
             ->persist();
 
         return $user;

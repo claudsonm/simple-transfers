@@ -121,6 +121,7 @@ class UserTest extends TestCase
         ]);
         $this->assertDatabaseHas('wallets', [
             'id' => 1,
+            'balance' => 0,
             'user_id' => 1,
         ]);
     }

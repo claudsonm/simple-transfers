@@ -75,4 +75,14 @@ class UserFactory extends Factory
     {
         return $this->has(Wallet::factory());
     }
+
+    /**
+     * @return static
+     */
+    public function withBalance(int $amountInCents = 10000)
+    {
+        return $this->has(Wallet::factory()->state(function () use ($amountInCents) {
+            return ['balance' => $amountInCents];
+        }));
+    }
 }

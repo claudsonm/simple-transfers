@@ -17,6 +17,7 @@
         "laravel/sanctum": "^2.7",
         "laravel/tinker": "^2.0",
         "myclabs/php-enum": "^1.7",
+        "prettus/l5-repository": "^2.7",
         "spatie/laravel-event-sourcing": "^4.6"
     },
     "require-dev": {

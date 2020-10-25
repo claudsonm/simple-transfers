@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Enums\UserPersonTypes;
 use App\Support\PendingUser;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -58,5 +60,10 @@ class User extends Authenticatable
     public static function createWithAttributes(array $attributes): PendingUser
     {
         return new PendingUser($attributes);
+    }
+
+    public function isPhysicalPerson(): bool
+    {
+        return $this->person_type == UserPersonTypes::PHYSICAL_PERSON();
     }
 }

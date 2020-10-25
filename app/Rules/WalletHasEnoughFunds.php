@@ -2,11 +2,14 @@
 
 namespace App\Rules;
 
+use App\Concerns\InteractsWithMoney;
 use App\Models\Wallet;
 use Illuminate\Contracts\Validation\Rule;
 
 class WalletHasEnoughFunds implements Rule
 {
+    use InteractsWithMoney;
+
     protected Wallet $wallet;
 
     /**
@@ -26,7 +29,9 @@ class WalletHasEnoughFunds implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $this->wallet->balanceIsGreaterThanOrEqualTo($value);
+        $money = $this->floatToMoney($value);
+
+        return $this->wallet->balanceIsGreaterThanOrEqualTo($money);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Money\Money;
 
 class Wallet extends Model
 {
@@ -41,14 +42,15 @@ class Wallet extends Model
     }
 
     /**
-     * @param int|float $value
+     * Get the wallet's balance as a money instance.
      */
-    public function balanceIsGreaterThanOrEqualTo($value): bool
+    public function getMoneyBalanceAttribute(): Money
     {
-        if (is_float($value)) {
-            $value = $value * 100;
-        }
+        return Money::BRL($this->balance);
+    }
 
-        return $this->balance >= $value;
+    public function balanceIsGreaterThanOrEqualTo(Money $money): bool
+    {
+        return $this->moneyBalance->greaterThanOrEqual($money);
     }
 }

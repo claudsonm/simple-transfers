@@ -11,11 +11,13 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return User
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CreateUserRequest $request)
     {
-        return User::createWithAttributes($request->validated())->save();
+        $user = User::createWithAttributes($request->validated())->save();
+
+        return response()->json($user, 201);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace App\StorableEvents;
 use App\Models\User;
 use Spatie\EventSourcing\StoredEvents\ShouldBeStored;
 
-class WalletCreated extends ShouldBeStored
+final class WalletCreated extends ShouldBeStored
 {
     public User $user;
 

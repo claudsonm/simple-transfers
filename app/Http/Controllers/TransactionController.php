@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Aggregates\WalletAggregateRoot;
 use App\Http\Requests\CreateTransactionRequest;
 
 class TransactionController extends Controller
@@ -20,6 +21,11 @@ class TransactionController extends Controller
      */
     public function store(CreateTransactionRequest $request)
     {
+        $aggregateRoot = WalletAggregateRoot::retrieve($request->retrievePayerWallet()->uuid);
+        $aggregateRoot->createTransaction($request->getValueAsMoney(), $request->input('payee'));
+        $aggregateRoot->persist();
+
+        return response()->noContent();
     }
 
     /**

@@ -2,14 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Concerns\InteractsWithMoney;
 use App\Models\Wallet;
-use App\Rules\WalletHasEnoughFunds;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Money\Money;
 
 class CreateTransactionRequest extends FormRequest
 {
+    use InteractsWithMoney;
+
     private ?Wallet $payerWallet = null;
 
     /**
@@ -35,7 +38,6 @@ class CreateTransactionRequest extends FormRequest
                 'numeric',
                 'regex:/^\d+(\.\d{1,2})?$/',
                 'min:1',
-                new WalletHasEnoughFunds($this->retrievePayerWallet()),
             ],
             'payer' => [
                 'required',
@@ -63,5 +65,10 @@ class CreateTransactionRequest extends FormRequest
         }
 
         return $this->payerWallet;
+    }
+
+    public function getValueAsMoney(): Money
+    {
+        return $this->floatToMoney($this->value);
     }
 }

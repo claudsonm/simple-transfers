@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use DomainException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -12,7 +14,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -27,11 +28,17 @@ class Handler extends ExceptionHandler
 
     /**
      * Register the exception handling callbacks for the application.
-     *
-     * @return void
      */
     public function register()
     {
-        //
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof DomainException) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
+
+        return parent::render($request, $e);
     }
 }

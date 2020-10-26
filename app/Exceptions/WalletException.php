@@ -8,6 +8,6 @@ class WalletException extends DomainException
 {
     public static function notEnoughFunds(): self
     {
-        return new static("The wallet doesn't have enough funds.");
+        return new static("The wallet doesn't have enough funds.", 403);
     }
 }

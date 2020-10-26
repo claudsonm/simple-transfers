@@ -2,9 +2,11 @@
 
 namespace App\Actions;
 
+use App\Aggregates\WalletAggregateRoot;
 use App\Models\User;
-use App\Support\PendingUser;
 use App\Repositories\Contracts\UserRepository;
+use App\Support\PendingUser;
+use Illuminate\Support\Str;
 
 class CreateUserAction
 {
@@ -17,6 +19,17 @@ class CreateUserAction
 
     public function execute(PendingUser $pendingUser): User
     {
-        return $this->repository->create($pendingUser->getAttributes());
+        $user = $this->repository->create($pendingUser->getAttributes());
+        $this->openAccountFor($user);
+
+        return $user;
+    }
+
+    private function openAccountFor(User $user): void
+    {
+        $newUuid = Str::uuid()->toString();
+        WalletAggregateRoot::retrieve($newUuid)
+            ->createWalletFor($user)
+            ->persist();
     }
 }

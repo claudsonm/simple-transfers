@@ -90,37 +90,6 @@ class TransactionTest extends TestCase
             ]);
     }
 
-    /** @test */
-    public function it_can_perform_the_transaction()
-    {
-        $jorgeBen = null;
-        $timMaia = User::factory()->physical()->create();
-        User::withoutEvents(function () use (&$jorgeBen, &$timMaia) {
-            $jorgeBen = User::factory()
-                ->physical()
-                ->withBalance(2575)
-                ->create();
-            Sanctum::actingAs($jorgeBen);
-        });
-
-        $data = [
-            'value' => 17.23,
-            'payer' => $jorgeBen->id,
-            'payee' => $timMaia->id,
-        ];
-        $this->postJson('/api/transactions', $data)
-            ->assertNoContent();
-
-        $this->assertDatabaseHas('wallets', [
-            'user_id' => $timMaia->id,
-            'balance' => 1723,
-        ]);
-        $this->assertDatabaseHas('wallets', [
-            'user_id' => $jorgeBen->id,
-            'balance' => 852,
-        ]);
-    }
-
     public function invalidCurrencyFormats(): array
     {
         return [

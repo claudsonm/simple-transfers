@@ -11,7 +11,6 @@ use App\StorableEvents\WalletCreated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Money\Money;
 use Tests\TestCase;
-use Spatie\EventSourcing\StoredEvents\Models\EloquentStoredEvent;
 
 class WalletAggregateTest extends TestCase
 {
@@ -28,12 +27,9 @@ class WalletAggregateTest extends TestCase
         WalletAggregateRoot::fake()
             ->given([new WalletCreated($tom)])
             ->when(function (WalletAggregateRoot $walletAggregate) {
-                try {
-                    $walletAggregate->createTransaction(Money::BRL(1575), 2);
-                } catch (WalletException $e) {
-                }
+                $walletAggregate->createTransaction(Money::BRL(1575), 2);
             })
-            ->assertRecorded(new TransactionRequestedWithoutEnoughFunds())
-            ->assertNotRecorded(TransactionAuthorizationRequested::class);
+            ->assertRecorded(new TransactionAuthorizationRequested(Money::BRL(1575), 2))
+            ->assertNotRecorded(TransactionRequestedWithoutEnoughFunds::class);
     }
 }

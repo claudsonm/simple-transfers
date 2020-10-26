@@ -14,6 +14,7 @@ class WalletProjector extends Projector
             'uuid' => $aggregateUuid,
             'branch' => '0001',
             'account' => str_pad(random_int(1000, 99999999), 8, '0', STR_PAD_LEFT),
+            'balance' => 10000,
             'user_id' => $event->user->id,
         ]);
     }

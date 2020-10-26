@@ -26,6 +26,11 @@ class WalletAggregateRoot extends AggregateRoot
         return $this;
     }
 
+    public function applyWalletCreated(WalletCreated $event)
+    {
+        $this->balance = $this->balance->add(Money::BRL(10000));
+    }
+
     /**
      * @throws WalletException
      */
